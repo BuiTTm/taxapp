@@ -4,4 +4,4 @@ from .models import TaxReturn
 class TaxReturnForm(ModelForm):
     class Meta:
         model = TaxReturn
-        fields = ['title', 'memo', 'important']
+        fields = ['title', 'memo', 'sin', 'year', 'full_name', 'important']
