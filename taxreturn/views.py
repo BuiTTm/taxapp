@@ -1,12 +1,16 @@
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect, get_object_or_404, reverse
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
+from django.conf import settings
 from django.db import IntegrityError
 from django.contrib.auth import login, logout, authenticate
 from .forms import TaxReturnForm
 from .models import TaxReturn
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
+from paypal.standard.forms import PayPalPaymentsForm
+from django.views.decorators.csrf import csrf_exempt
+
 
 def home(request):
     return render(request, 'todo/home.html')
@@ -68,10 +72,16 @@ def completedtodos(request):
     return render(request, 'todo/completedtodos.html', {'todos':todos})
 
 @login_required
+def paidtodos(request):
+    todos = TaxReturn.objects.filter(user=request.user, paymentcompleted__isnull=False).order_by('-paymentcompleted')
+    return render(request, 'todo/paidtodos.html', {'todos':todos})
+
+@login_required
 def viewtodo(request, todo_pk):
     todo = get_object_or_404(TaxReturn, pk=todo_pk, user=request.user)
     if request.method == 'GET':
         form = TaxReturnForm(instance=todo)
+        request.session['todo_id'] = todo.id
         return render(request, 'todo/viewtodo.html', {'todo':todo, 'form':form})
     else:
         try:
@@ -88,6 +98,65 @@ def completetodo(request, todo_pk):
         todo.datecompleted = timezone.now()
         todo.save()
         return redirect('currenttodos')
+    
+# @login_required
+# #def process_payment(request, todo_pk):
+# def process_payment(request, todo_pk):
+#     #todo_id = request.session.get('todo_id')
+#     host = request.get_host()
+#     todo = get_object_or_404(TaxReturn, pk=todo_pk, user=request.user)
+
+#     paypal_dict = {
+#         'business': settings.PAYPAL_RECEIVER_EMAIL,
+#         'amount': '59.99',
+#         'item_name': 'Tax return {}'.format(todo.id),
+#         'invoice': str(todo.id),
+#         'currency_code': 'CAD',
+#         'notify_url': 'http://{}{}'.format(host,
+#                                         reverse('paypal-ipn')),
+#         'return_url': 'http://{}{}'.format(host,
+#                                             reverse('payment_done', args=(todo.id,))),
+#         'cancel_return': 'http://{}{}'.format(host,
+#                                                 reverse('payment_cancelled', args=(todo.id,))),
+#     }
+#     form = PayPalPaymentsForm(initial=paypal_dict)
+
+#     return render(request, 'todo/process_payment.html', {'todo':todo, 'form': form})
+
+#@csrf_exempt
+def proceed_payment(request, todo_pk):
+    host = request.get_host()
+    todo = get_object_or_404(TaxReturn, pk=todo_pk, user=request.user)
+    if request.method == 'POST':
+        paypal_dict = {
+            'business': settings.PAYPAL_RECEIVER_EMAIL,
+            'amount': '59.99',
+            'item_name': 'Tax return {}'.format(todo.id),
+            'invoice': str(todo.id),
+            'currency_code': 'CAD',
+            'notify_url': 'http://{}{}'.format(host,
+                                            reverse('paypal-ipn')),
+            'return_url': 'http://{}{}'.format(host,
+                                             reverse('payment_done', args=(todo.id,))),
+            'cancel_return': 'http://{}{}'.format(host,
+                                                 reverse('payment_cancelled', args=(todo.id,))),
+        }
+        form = PayPalPaymentsForm(initial=paypal_dict)
+
+        #return redirect('process_payment', todo_pk=todo)
+        return render(request, 'todo/process_payment.html', {'todo':todo, 'form': form})
+        
+@csrf_exempt
+def payment_done(request, todo_pk):
+    todo = get_object_or_404(TaxReturn, pk=todo_pk, user=request.user)
+    todo.paymentcompleted = timezone.now()
+    todo.save()
+    return render(request, 'todo/payment_done.html')
+
+@csrf_exempt
+def payment_canceled(request, todo_pk):
+    todo = get_object_or_404(TaxReturn, pk=todo_pk, user=request.user)
+    return render(request, 'todo/payment_cancelled.html', {'todo': todo})
 
 @login_required
 def deletetodo(request, todo_pk):

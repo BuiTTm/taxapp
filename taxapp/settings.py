@@ -37,7 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'taxreturn.apps.TaxreturnConfig'
+    'taxreturn.apps.TaxreturnConfig',
+    'paypal.standard.ipn'
 ]
 
 MIDDLEWARE = [
@@ -124,3 +125,7 @@ LOGIN_URL = '/login'
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+PAYPAL_RECEIVER_EMAIL = 'sb-4ycqm15589396@business.example.com'
+
+PAYPAL_TEST = True

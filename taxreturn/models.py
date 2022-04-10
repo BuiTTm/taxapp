@@ -17,6 +17,7 @@ class TaxReturn(models.Model):
     datecompleted = models.DateTimeField(null=True, blank=True)
     important = models.BooleanField(default=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    paymentcompleted = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
         return self.title
