@@ -151,7 +151,7 @@ def payment_done(request, todo_pk):
     todo = get_object_or_404(TaxReturn, pk=todo_pk, user=request.user)
     todo.paymentcompleted = timezone.now()
     todo.save()
-    return render(request, 'todo/payment_done.html')
+    return render(request, 'todo/payment_done.html', {'todo': todo})
 
 @csrf_exempt
 def payment_canceled(request, todo_pk):
