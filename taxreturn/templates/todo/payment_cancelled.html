@@ -1,7 +1,6 @@
 {% extends "todo/base.html" %}
 
 {% block content %}
-
-    <p>Payment cancelled.</p>
-
+    <h2>Transaction was unsuccessful.</h2>
+    <a href="{% url 'viewtodo' todo.id %}"><b>Return to tax return {{ todo.title }}</b></a>
 {% endblock %}
