@@ -10,7 +10,7 @@ from django.utils import timezone
 from django.contrib.auth.decorators import login_required
 from paypal.standard.forms import PayPalPaymentsForm
 from django.views.decorators.csrf import csrf_exempt
-
+from lxml import etree
 
 def home(request):
     return render(request, 'todo/home.html')
@@ -95,8 +95,31 @@ def viewtodo(request, todo_pk):
 def completetodo(request, todo_pk):
     todo = get_object_or_404(TaxReturn, pk=todo_pk, user=request.user)
     if request.method == 'POST':
+        root = etree.Element(f'TaxReturn')
+        root.append(etree.Element('info'))
+        child = etree.Element('Year')
+        child.text = f'{todo.year}'
+        root.append(child)
+        child = etree.Element('Name')
+        child.text = f'{todo.full_name}'
+        root.append(child)
+        child = etree.Element('Sin')
+        child.text = f'{todo.sin}'
+        root.append(child)
+        child = etree.Element('Income')
+        child.text = f'{todo.memo}'
+        root.append(child)
+        
+        s=etree.tostring(root, pretty_print=True)
+        print(s)
+        
         todo.datecompleted = timezone.now()
         todo.save()
+        # with open(f"TaxReturn{todo.id}.xml", "w") as out:
+        #     xml_serializer.serialize(todo.objects.all(), stream=out)
+        # data = serializers.serialize("xml", MessageHeaderModel2.objects.all())
+        # print(data)
+        # return HttpResponse(data)
         return redirect('currenttodos')
     
 # @login_required
