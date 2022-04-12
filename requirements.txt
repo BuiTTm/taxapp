@@ -5,6 +5,7 @@ cx-Oracle==8.3.0
 Django==4.0.3
 django-paypal==2.0
 idna==3.3
+lxml==4.8.0
 Pillow==9.0.1
 pytz==2022.1
 requests==2.27.1
