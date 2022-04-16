@@ -75,6 +75,16 @@ WSGI_APPLICATION = 'taxapp.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.oracle',
+#         'NAME': 'xe',
+#         'USER': 'system',
+#         'PASSWORD': 'system',
+#         'PORT': 1521
+#     }
+# }
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -107,7 +117,8 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/New_York'
+#TIME_ZONE = 'UTC'
 
 USE_I18N = True
 
