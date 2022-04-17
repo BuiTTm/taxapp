@@ -17,7 +17,7 @@
 
 <nav class="navbar navbar-light" style="background-color: #e3f2fd;">
 <div class="container">
-    <a class="navbar-brand" href="{% url 'home' %}">
+    <a class="navbar-brand" href="{% if not user.is_authenticated %}{% url 'home' %}{% else %}{% url 'currenttodos' %}{% endif %}">
          <img src="{% static 'todo/logo.png' %}" width="30" height="30" class="d-inline-block align-top">
         <span>TTurboTax</span>
     </a>

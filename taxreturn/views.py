@@ -1,3 +1,4 @@
+from xml.etree.ElementTree import tostring
 from django.shortcuts import render, redirect, get_object_or_404, reverse
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
@@ -10,7 +11,11 @@ from django.utils import timezone
 from django.contrib.auth.decorators import login_required
 from paypal.standard.forms import PayPalPaymentsForm
 from django.views.decorators.csrf import csrf_exempt
-from lxml import etree
+from lxml import etree, objectify
+from datetime import datetime
+from io import BytesIO
+
+import xml.dom.minidom
 
 def home(request):
     return render(request, 'todo/home.html')
@@ -95,58 +100,41 @@ def viewtodo(request, todo_pk):
 def completetodo(request, todo_pk):
     todo = get_object_or_404(TaxReturn, pk=todo_pk, user=request.user)
     if request.method == 'POST':
-        root = etree.Element(f'TaxReturn')
-        root.append(etree.Element('info'))
-        child = etree.Element('Year')
+        
+        root = etree.Element(f'taxReturn')
+        child = etree.Element('year')
         child.text = f'{todo.year}'
         root.append(child)
-        child = etree.Element('Name')
+        child = etree.Element('name')
         child.text = f'{todo.full_name}'
         root.append(child)
-        child = etree.Element('Sin')
+        child = etree.Element('sin')
         child.text = f'{todo.sin}'
         root.append(child)
-        child = etree.Element('Income')
+        child = etree.Element('income')
         child.text = f'{todo.memo}'
         root.append(child)
         
         s=etree.tostring(root, pretty_print=True)
-        print(s)
+        dom = xml.dom.minidom.parseString(s)
+        pretty_xml_as_string = dom.toprettyxml()
+        print(pretty_xml_as_string)
+
+        xml_validator = etree.XMLSchema(file="schema.xsd")
+
+        # VALIDATION XML CONTRE XSD
+        is_valid = xml_validator.validate(etree.XML(pretty_xml_as_string))   
+        print("----> ## VALIDATION AGAINST GOV XSD:" )
+        print(is_valid)
+        print("<----" )
         
         todo.datecompleted = timezone.now()
         todo.save()
-        # with open(f"TaxReturn{todo.id}.xml", "w") as out:
-        #     xml_serializer.serialize(todo.objects.all(), stream=out)
-        # data = serializers.serialize("xml", MessageHeaderModel2.objects.all())
-        # print(data)
-        # return HttpResponse(data)
+     
         return redirect('currenttodos')
     
-# @login_required
-# #def process_payment(request, todo_pk):
-# def process_payment(request, todo_pk):
-#     #todo_id = request.session.get('todo_id')
-#     host = request.get_host()
-#     todo = get_object_or_404(TaxReturn, pk=todo_pk, user=request.user)
 
-#     paypal_dict = {
-#         'business': settings.PAYPAL_RECEIVER_EMAIL,
-#         'amount': '59.99',
-#         'item_name': 'Tax return {}'.format(todo.id),
-#         'invoice': str(todo.id),
-#         'currency_code': 'CAD',
-#         'notify_url': 'http://{}{}'.format(host,
-#                                         reverse('paypal-ipn')),
-#         'return_url': 'http://{}{}'.format(host,
-#                                             reverse('payment_done', args=(todo.id,))),
-#         'cancel_return': 'http://{}{}'.format(host,
-#                                                 reverse('payment_cancelled', args=(todo.id,))),
-#     }
-#     form = PayPalPaymentsForm(initial=paypal_dict)
 
-#     return render(request, 'todo/process_payment.html', {'todo':todo, 'form': form})
-
-#@csrf_exempt
 def proceed_payment(request, todo_pk):
     host = request.get_host()
     todo = get_object_or_404(TaxReturn, pk=todo_pk, user=request.user)
@@ -155,7 +143,7 @@ def proceed_payment(request, todo_pk):
             'business': settings.PAYPAL_RECEIVER_EMAIL,
             'amount': '59.99',
             'item_name': 'Tax return {}'.format(todo.id),
-            'invoice': str(todo.id),
+            'invoice': str(todo.id) + " - " + datetime.now().strftime("%d/%m/%Y %H:%M:%S"),
             'currency_code': 'CAD',
             'notify_url': 'http://{}{}'.format(host,
                                             reverse('paypal-ipn')),
@@ -165,7 +153,7 @@ def proceed_payment(request, todo_pk):
                                                  reverse('payment_cancelled', args=(todo.id,))),
         }
         form = PayPalPaymentsForm(initial=paypal_dict)
-
+        print(str(todo.id) + " - " + datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
         #return redirect('process_payment', todo_pk=todo)
         return render(request, 'todo/process_payment.html', {'todo':todo, 'form': form})
         
