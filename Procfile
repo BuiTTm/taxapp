@@ -1,1 +1,1 @@
-web: gunicorn taxapp.wsgi
+web: gunicorn taxapp.wsgi:application --log-file - --log-level debug
