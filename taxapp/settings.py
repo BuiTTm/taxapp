@@ -100,7 +100,7 @@ DATABASES = {
         'HOST': 'db',
         'PORT': 5432,
         'TEST': {
-            'NAME': 'mytestdatabase',   <--- YOU NEED CONFIG HERE!
+            'NAME': 'mytestdatabase',
         },
     }
 }
