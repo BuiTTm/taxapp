@@ -45,8 +45,16 @@ jobs:
       run: |
         python manage.py test
   
-  custom-deploy:
+  test:
     needs: build
+    runs-on: ubuntu-latest
+    steps:  
+      - name: Run Tests
+        run: |
+          python manage.py test
+
+  deploy:
+    needs: test
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository
