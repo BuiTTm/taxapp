@@ -7,6 +7,7 @@ env:
   CLUSTER_NAME: myAKSCluster
   CLUSTER_RESOURCE_GROUP: cloud-shell-storage-aus
   NAMESPACE: dev
+  SECRET: 
   APP_NAME: taxapp
   
 jobs:
@@ -28,13 +29,38 @@ jobs:
         docker push ${{ env.REGISTRY_NAME }}.azurecr.io/${{ env.APP_NAME }}:${{ github.sha }}
       working-directory: .
 
-    - name: Gets K8s context
-      uses: azure/aks-set-context@4e5aec273183a197b181314721843e047123d9fa
+    # Set the target Azure Kubernetes Service (AKS) cluster. 
+    - uses: azure/aks-set-context@v1
       with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
-          resource-group: ${{ env.CLUSTER_RESOURCE_GROUP }}
-          cluster-name: ${{ env.CLUSTER_NAME }}
-      id: login
+        creds: '${{ secrets.AZURE_CREDENTIALS }}'
+        cluster-name: ${{ env.CLUSTER_NAME }}
+        resource-group: ${{ env.CLUSTER_RESOURCE_GROUP }}
+    
+    # Create namespace if doesn't exist
+    - run: |
+        kubectl create namespace ${{ env.NAMESPACE }} --dry-run=client -o json | kubectl apply -f -
+    
+    # Create image pull secret for ACR
+    - uses: azure/k8s-create-secret@v1
+      with:
+        container-registry-url: ${{ env.REGISTRY_NAME }}.azurecr.io
+        container-registry-username: ${{ secrets.REGISTRY_USERNAME }}
+        container-registry-password: ${{ secrets.REGISTRY_PASSWORD }}
+        secret-name: ${{ env.SECRET }}
+        namespace: ${{ env.NAMESPACE }}
+        arguments: --force true
+    
+    # Deploy app to AKS
+    - uses: azure/k8s-deploy@v1
+      with:
+        manifests: |
+          ${{ github.workspace }}/manifests/deployment.yaml
+          ${{ github.workspace }}/manifests/service.yaml
+        images: |
+          ${{ env.REGISTRY_NAME }}.azurecr.io/${{ env.APP_NAME }}:${{ github.sha }}
+        imagepullsecrets: |
+          ${{ env.SECRET }}
+        namespace: ${{ env.NAMESPACE }}
 
 #     - name: Configure deployment
 #       uses: azure/k8s-bake@773b6144a3732e3bf4c78b146a0bb9617b2e016b
