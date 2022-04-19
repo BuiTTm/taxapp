@@ -46,6 +46,7 @@ jobs:
         python manage.py test
   
   custom-deploy:
+    needs: build
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository
