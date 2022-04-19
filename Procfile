@@ -1,0 +1,1 @@
+web: gunicorn taxapp.wsgi:application --log-file - --log-level debug
