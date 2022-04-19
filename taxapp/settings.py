@@ -28,6 +28,7 @@ SECRET_KEY = 'django-insecure-=75r=a3zmhr6_^wu=@%p+=z)7o43^x6^qlcun_u656@8a4_5hn
 DEBUG = int(os.environ.get('DEBUG', default=0))
 
 ALLOWED_HOSTS = ['*']
+CSRF_TRUSTED_ORIGINS = ['*']
 
 
 # Application definition
@@ -172,6 +173,8 @@ STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 #STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+CSRF_TRUSTED_ORIGINS = ['*']
 
 LOGIN_URL = '/login'
 
