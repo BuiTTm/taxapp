@@ -6,7 +6,7 @@ env:
   REGISTRY_NAME: containerAus
   CLUSTER_NAME: myAKSCluster
   CLUSTER_RESOURCE_GROUP: cloud-shell-storage-aus
-  NAMESPACE: azure-dockertaxapp
+  NAMESPACE: dev
   APP_NAME: taxapp
   
 jobs:
