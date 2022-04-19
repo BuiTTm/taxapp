@@ -4,7 +4,7 @@
  
  It was largely based on zappycode/todowoo project. 
 
-To execute the project:
+1 - To execute the project:
 ```
 $python manage.py makemigrations
 $python manage.py migrate
