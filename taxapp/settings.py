@@ -24,8 +24,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-=75r=a3zmhr6_^wu=@%p+=z)7o43^x6^qlcun_u656@8a4_5hn'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-# --> change ALEX DEBUG = True
-DEBUG = int(os.environ.get('DEBUG', default=0))
+DEBUG = True
+#DEBUG = int(os.environ.get('DEBUG', default=0))
 
 ALLOWED_HOSTS = ['*']
 CSRF_TRUSTED_ORIGINS = ['https://guarded-plateau-90625.herokuapp.com']
