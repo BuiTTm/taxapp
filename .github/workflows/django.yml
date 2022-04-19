@@ -41,14 +41,12 @@ jobs:
       run: python manage.py makemigrations        
     - name: Run migrations
       run: python manage.py migrate
-    - name: Run Tests
-      run: |
-        python manage.py test
   
   test:
     needs: build
     runs-on: ubuntu-latest
-    steps:  
+    steps:
+      - uses: actions/checkout@v3  
       - name: Run Tests
         run: |
           python manage.py test
