@@ -28,7 +28,7 @@ DEBUG = True
 #DEBUG = int(os.environ.get('DEBUG', default=0))
 
 ALLOWED_HOSTS = ['*']
-CSRF_TRUSTED_ORIGINS = ['https://mgl7760.herokuapp.com']
+CSRF_TRUSTED_ORIGINS = ['https://*.herokuapp.com']
 
 
 
