@@ -28,13 +28,13 @@ jobs:
         docker push ${{ env.REGISTRY_NAME }}.azurecr.io/${{ env.APP_NAME }}:${{ github.sha }}
       working-directory: .
 
-    - name: Gets K8s context
-      uses: azure/aks-set-context@4e5aec273183a197b181314721843e047123d9fa
-      with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
-          resource-group: ${{ env.CLUSTER_RESOURCE_GROUP }}
-          cluster-name: ${{ env.CLUSTER_NAME }}
-      id: login
+    # - name: Gets K8s context
+    #   uses: azure/aks-set-context@4e5aec273183a197b181314721843e047123d9fa
+    #   with:
+    #       creds: ${{ secrets.AZURE_CREDENTIALS }}
+    #       resource-group: ${{ env.CLUSTER_RESOURCE_GROUP }}
+    #       cluster-name: ${{ env.CLUSTER_NAME }}
+    #   id: login
 
 #     - name: Configure deployment
 #       uses: azure/k8s-bake@773b6144a3732e3bf4c78b146a0bb9617b2e016b
