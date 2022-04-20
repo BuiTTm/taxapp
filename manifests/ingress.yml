@@ -1,0 +1,17 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+    name: "clockaks01-599b"
+    labels:
+        app: "clockaks01-599b"
+    annotations:
+        kubernetes.io/ingress.class: addon-http-application-routing
+spec:
+    rules:
+        - host: clockaks01a23e-clockaks01-599b.8082e0d5a7444b9fb0c1.australiaeast.aksapp.io
+          http:
+            paths:
+            - path: /
+              backend:
+                serviceName: "clockaks01-599b"
+                servicePort: 80
