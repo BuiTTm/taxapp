@@ -14,7 +14,11 @@ $python manage.py runserver
 Checklist to complete:
 
 - [X] Implement Payment System (Paypal)
-- [ ] Implement conversion (XML) for submission
-- [ ] Test a working version with Oracle DB
-- [ ] Create Python Virtual environments
-- [ ] Select a workflow for CI/CD (Docker)
+- [X] Implement conversion (XML) for submission
+- [X] Test a working version with Oracle DB 
+- [X] Create Python Virtual environments
+- [X] Select a workflow for CI/CD (Docker)
+- [X] Continuous Deployment to Heroku
+- [X] Continuous Deployment to Azure
+- [X] Deploy Images from Azure to Kuberneetes containers
+- [ ] Reserved for demo testing to simulate git push
