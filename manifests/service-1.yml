@@ -5,7 +5,7 @@ metadata:
     labels:
         app: "clockaks01-528d"
 spec:
-    type: ClusterIP
+    type: LoadBalancer
     ports:
     - port: 80
       targetPort: 8000

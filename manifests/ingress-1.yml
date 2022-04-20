@@ -5,10 +5,11 @@ metadata:
     labels:
         app: "clockaks01-528d"
     annotations:
-        kubernetes.io/ingress.class: addon-http-application-routing
+        kubernetes.io/ingress.class: nginx
+        nginx.ingress.kubernetes.io/rewrite-target: /$1
 spec:
     rules:
-        - host: clockaks019069-clockaks01-528d.8082e0d5a7444b9fb0c1.australiaeast.aksapp.io
+        - host: django-aks-ingress.australiaeast.cloudapp.azure.com/
           http:
             paths:
             - path: /
