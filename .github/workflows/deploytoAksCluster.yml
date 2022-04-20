@@ -38,7 +38,8 @@ jobs:
         container-registry-password: ${{ secrets.acr_clockacr01_password }}
         secret-name: clockaks01dockerauth
        
-    - uses: azure/k8s-deploy@v1.2
+    #- uses: azure/k8s-deploy@v1.2
+    - uses: azure/k8s-deploy@v1.19
       with:
         namespace: clockaks01a23e
         manifests: |
