@@ -1,8 +1,6 @@
 # TTurboTax application
  Dummy named this project to TTurboTax
  This project is intended for class' subject.
- 
- It was largely based on zappycode/todowoo project. 
 
 1 - To execute the project:
 ```
