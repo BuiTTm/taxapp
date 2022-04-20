@@ -19,4 +19,4 @@ Checklist to complete:
 - [X] Continuous Deployment to Heroku
 - [X] Continuous Deployment to Azure
 - [X] Deploy Images from Azure to Kuberneetes containers
-- [ ] Reserved for demo testing to simulate git push
+- [X] Reserved for demo testing to simulate git push
