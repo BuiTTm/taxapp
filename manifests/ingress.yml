@@ -14,5 +14,7 @@ spec:
             paths:
             - path: /
               backend:
-                serviceName: "clockaks01-599b"
-                servicePort: 80
+                service:
+                  name: "clockaks01-599b"
+                  port: 
+                    number: 80
