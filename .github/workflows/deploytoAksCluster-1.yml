@@ -13,8 +13,9 @@ jobs:
     
     - name: Build and push image to ACR
       id: build-image
+      #docker build "$GITHUB_WORKSPACE/docker-azure" -f  "docker-azure/dockerfile" -t clockacr01.azurecr.io/clockaks01:${{ github.sha }} --label dockerfile-path=docker-azure/dockerfile
       run: |
-        docker build "$GITHUB_WORKSPACE/docker-azure" -f  "docker-azure/dockerfile" -t clockacr01.azurecr.io/clockaks01:${{ github.sha }} --label dockerfile-path=docker-azure/dockerfile
+        docker build "$GITHUB_WORKSPACE" -f  "docker-azure/dockerfile" -t clockacr01.azurecr.io/clockaks01:${{ github.sha }} --label dockerfile-path=docker-azure/dockerfile
         docker push clockacr01.azurecr.io/clockaks01:${{ github.sha }}
     
     - uses: azure/k8s-set-context@v1
